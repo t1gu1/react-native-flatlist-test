@@ -15,21 +15,29 @@ const data = [
   { title: "Title Text 7", key: "item7" },
 ];
 
+// Change this Boolean to invert the FlatList vertical with the Horizontal
+const prioriseVerticalScrollView = true;
+
 export default function App() {
   return (
     <Main>
       <FlatList
         snapToAlignment="center"
         decelerationRate="fast"
-        snapToInterval={contentWidth}
-        horizontal
+        snapToInterval={
+          prioriseVerticalScrollView ? contentWidth : contentHeight
+        }
+        horizontal={prioriseVerticalScrollView}
         data={data}
         renderItem={({ index: indexH }) => (
           <FlatListContentHorizontal>
             <FlatList
               snapToAlignment="center"
               decelerationRate="fast"
-              snapToInterval={contentHeight}
+              snapToInterval={
+                !prioriseVerticalScrollView ? contentWidth : contentHeight
+              }
+              horizontal={!prioriseVerticalScrollView}
               data={data}
               renderItem={({ item, index, separators }) => (
                 <FlatListContent>
@@ -45,12 +53,7 @@ export default function App() {
                   <Spacer />
 
                   <FlatListInfo>Horizontal scrollView</FlatListInfo>
-                  <FlatListScrollView
-                    horizontal
-                    alwaysBounceHorizontal={false}
-                    alwaysBounceVertical={false}
-                    bounces={false}
-                  >
+                  <FlatListScrollView horizontal>
                     <FlatListTitle>{`${indexH}: ${item.title}`}</FlatListTitle>
 
                     <FlatListText>
@@ -76,8 +79,8 @@ const Main = styled(View)`
 const FlatListContent = styled(View)`
   flex: 1;
   height: ${contentHeight}px;
-  width: 100%;
   padding: 90px 30px;
+  width: ${!prioriseVerticalScrollView ? "100%" : `${contentWidth}px`};
   border: 1px solid black;
   background-color: white;
 `;
@@ -85,6 +88,7 @@ const FlatListContent = styled(View)`
 const FlatListScrollView = styled(ScrollView)`
   background-color: yellow;
   max-height: 200px;
+  max-width: ${contentWidth - 60}px;
 `;
 
 const FlatListInfo = styled(Text)`
@@ -108,7 +112,7 @@ const Spacer = styled(Text)`
 // Horizontal
 const FlatListContentHorizontal = styled(View)`
   flex: 1;
-  width: ${contentWidth}px;
+  width: ${!prioriseVerticalScrollView ? "100%" : `${contentWidth}px`};
   border: 1px solid black;
   background-color: white;
 `;
